@@ -1,0 +1,21 @@
+### total stock
+
+GET http://localhost:4004/odata/v4/my/Products
+
+
+###total active stock
+GET http://localhost:4004/odata/v4/my/Products?$filter=(Discontinued eq false)
+
+
+### Task 3 - Have a Northbreeze product selected for you
+
+POST http://localhost:4004/odata/v4/my/mySelectProduct
+Content-Type: application/json
+
+{"communityID": "satya-dev"}
+
+### SAP Developer Challenge - APIs - Task 4 - Discover the Date and Time API Package
+POST http://localhost:4004/odata/v4/my/getAPIPaths
+Content-Type: application/json
+
+{}

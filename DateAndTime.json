@@ -1,0 +1,547 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0-beta",
+        "title": "Date and Time",
+        "description": "The Date and Time service provides Rest APIs that can be used in your application to get information like default date format of a country, time zone for a country, region and other details of time zone. These APIs are aimed to simplify your application development by using these ready utility APIs."
+    },
+    "x-sap-shortText": "Get default date format for a given country, time zone details, time differences",
+    "x-sap-stateInfo": {
+        "state": "Beta"
+    },
+    "host": "sandbox.api.sap.com",
+    "x-servers": [
+        {
+            "url": "https://abs-proxy-canary-1.cfapps.eu12.hana.ondemand.com/api/v1/dateandtime",
+            "description": "Canary landscape"
+        },
+        {
+            "url": "https://abs-proxy-prod-eu10.cfapps.eu10.hana.ondemand.com/api/v1/dateandtime",
+            "description": "Productive landscape: Europe"
+        },
+        {
+            "url": "https://abs-proxy-prod-us10.cfapps.us10.hana.ondemand.com/api/v1/dateandtime",
+            "description": "Productive landscape: US East"
+        }
+    ],
+    "basePath": "/dateandtime",
+    "securityDefinitions": {
+        "oAuth2": {
+            "type": "oauth2",
+            "tokenUrl": "https://{subdomain(identity_zone)}.authentication.{landscapehost}/oauth/token",
+            "flow": "application",
+            "scopes": {
+                "uaa.resource": "descr uaa.resource"
+            }
+        }
+    },
+    "security": [
+        {
+            "oAuth2": [
+                "uaa.resource"
+            ]
+        }
+    ],
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/getTimezoneFromLocation": {
+            "get": {
+                "summary": "Get time zone for a given location",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "ISO country code for a given location; e.g. DE",
+                        "type": "string",
+                        "maxLength": 3,
+                        "required": true
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "description": "region in country (if country has different time zones)",
+                        "type": "string",
+                        "maxLength": 3,
+                        "required": false
+                    },
+                    {
+                        "name": "zipCode",
+                        "in": "query",
+                        "description": "zip code in country (if country has different time zones)",
+                        "type": "string",
+                        "maxLength": 10,
+                        "required": false
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/TTZDATA-TZONE"
+                        }
+                    },
+                    "401": {
+                        "description": "not authorized"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "500": {
+                        "description": "error"
+                    }
+                }
+            }
+        },
+        "/getIetfDetailsFromTimezone": {
+            "get": {
+                "summary": "Get IETF data for a given time zone",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "timeZone",
+                        "in": "query",
+                        "description": "time zone id; e.g. CET",
+                        "type": "string",
+                        "maxLength": 6,
+                        "required": true
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Year for which IETF details should be valid",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/TTABTZIETF"
+                        }
+                    },
+                    "401": {
+                        "description": "not authorized"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "500": {
+                        "description": "error"
+                    }
+                }
+            }
+        },
+        "/getTimezoneText": {
+            "get": {
+                "summary": "Get language specific text for a given time zone",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "timeZone",
+                        "in": "query",
+                        "description": "time zone id; e.g. CET",
+                        "type": "string",
+                        "maxLength": 6,
+                        "required": true
+                    },
+                    {
+                        "name": "languageId",
+                        "in": "query",
+                        "description": "ID of language in which values should be returned e.g. EN",
+                        "type": "string",
+                        "maxLength": 2,
+                        "required": false
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/TZNDESCTZN"
+                        }
+                    },
+                    "401": {
+                        "description": "not authorized"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "500": {
+                        "description": "error"
+                    }
+                }
+            }
+        },
+        "/getTimezoneOffset": {
+            "get": {
+                "summary": "Get offset to UTC for a given time zone",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "time zone id; e.g. CET",
+                        "type": "string",
+                        "maxLength": 6,
+                        "required": true
+                    },
+                    {
+                        "name": "localDate",
+                        "in": "query",
+                        "description": "local date in ISO notation e.g. 2022-01-01",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "localTime",
+                        "in": "query",
+                        "description": "local time in ISO notation e.g. 08:00 or 08:00:00",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/TIMEZONE_OFFSET"
+                        }
+                    },
+                    "401": {
+                        "description": "not authorized"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "500": {
+                        "description": "error"
+                    }
+                }
+            }
+        },
+        "/getTimezoneData": {
+            "get": {
+                "summary": "Get details for a given time zone",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "time zone id; e.g. CET",
+                        "type": "string",
+                        "maxLength": 6,
+                        "required": true
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/TIMEZONE_DATA"
+                        }
+                    },
+                    "401": {
+                        "description": "not authorized"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "500": {
+                        "description": "error"
+                    }
+                }
+            }
+        },
+        "/getCountryDateFormat": {
+            "get": {
+                "summary": "Get date format for a given country",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "ISO country code to get the date format from; e.g. DE",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/STRING"
+                        }
+                    },
+                    "401": {
+                        "description": "not authorized"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "500": {
+                        "description": "error"
+                    }
+                }
+            }
+        },
+        "/getTimeDifference": {
+            "get": {
+                "summary": "Get difference of two times",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "date1",
+                        "in": "query",
+                        "description": "date in ISO notation; e.g. 2022-01-01",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "time1",
+                        "in": "query",
+                        "description": "time in ISO notation; e.g. 08:00 or 08:00:00",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "timezone1",
+                        "in": "query",
+                        "description": "time zone id; e.g. CET",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "date2",
+                        "in": "query",
+                        "description": "date in ISO notation, e.g. 2022-01-05",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "time2",
+                        "in": "query",
+                        "description": "time in ISO notation, e.g. 09:00 or 09:00:00",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "timezone2",
+                        "in": "query",
+                        "description": "time zone id; e.g. CET",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "timeunit",
+                        "in": "query",
+                        "description": "time unit as ISO period, e.g. P1Y or PT1H (numeric value will be ignored)",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/STRING"
+                        }
+                    },
+                    "401": {
+                        "description": "not authorized"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "500": {
+                        "description": "error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "STRING": {
+            "type": "string"
+        },
+        "TIMEZONE_DATA": {
+            "type": "object",
+            "properties": {
+                "general": {
+                    "type": "object",
+                    "properties": {
+                        "tzone": {
+                            "type": "string",
+                            "maxLength": 6
+                        },
+                        "descript": {
+                            "type": "string",
+                            "maxLength": 30
+                        },
+                        "zonerule": {
+                            "type": "string",
+                            "maxLength": 6
+                        },
+                        "zonedesc": {
+                            "type": "string",
+                            "maxLength": 20
+                        },
+                        "utcdiff": {
+                            "type": "string"
+                        },
+                        "utcsign": {
+                            "type": "string",
+                            "maxLength": 1
+                        },
+                        "dstrule": {
+                            "type": "string",
+                            "maxLength": 6
+                        },
+                        "dstdesc": {
+                            "type": "string",
+                            "maxLength": 20
+                        },
+                        "dstdiff": {
+                            "type": "string"
+                        },
+                        "flagactive": {
+                            "type": "string",
+                            "maxLength": 1
+                        }
+                    }
+                },
+                "varDstRules": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "dstrule": {
+                                "type": "string",
+                                "maxLength": 6
+                            },
+                            "yearfrom": {
+                                "type": "string"
+                            },
+                            "monthfrom": {
+                                "type": "string"
+                            },
+                            "weekdfrom": {
+                                "type": "string"
+                            },
+                            "weekdcfrom": {
+                                "type": "string"
+                            },
+                            "timefrom": {
+                                "type": "string"
+                            },
+                            "monthto": {
+                                "type": "string"
+                            },
+                            "weekdto": {
+                                "type": "string"
+                            },
+                            "weekdcto": {
+                                "type": "string"
+                            },
+                            "timeto": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "fixDstRules": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "dstrule": {
+                                "type": "string",
+                                "maxLength": 6
+                            },
+                            "yearact": {
+                                "type": "string"
+                            },
+                            "datefrom": {
+                                "type": "string"
+                            },
+                            "timefrom": {
+                                "type": "string"
+                            },
+                            "dateto": {
+                                "type": "string"
+                            },
+                            "timeto": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "varDstInd": {
+                    "type": "string",
+                    "maxLength": 1
+                }
+            }
+        },
+        "TIMEZONE_OFFSET": {
+            "type": "object",
+            "properties": {
+                "utcDiff": {
+                    "type": "string"
+                },
+                "utcSign": {
+                    "type": "string",
+                    "maxLength": 1
+                },
+                "isInDst": {
+                    "type": "string",
+                    "maxLength": 1
+                }
+            }
+        },
+        "TTABTZIETF": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "maxLength": 255
+            }
+        },
+        "TTZDATA-TZONE": {
+            "type": "string",
+            "maxLength": 6
+        },
+        "TZNDESCTZN": {
+            "type": "string",
+            "maxLength": 30
+        }
+    }
+}

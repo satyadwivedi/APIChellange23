@@ -1,0 +1,221 @@
+{
+ "meta": {
+  "creator": "cds-dk 7.0.2"
+ },
+ "$version": "2.0",
+ "definitions": {
+  "northbreeze.selectProduct": {
+   "kind": "action",
+   "@cds.external": true,
+   "params": {
+    "communityid": {
+     "type": "cds.LargeString"
+    }
+   },
+   "returns": {
+    "type": "cds.LargeString"
+   }
+  },
+  "northbreeze.Products": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "ProductID": {
+     "key": true,
+     "type": "cds.Integer",
+     "notNull": true
+    },
+    "ProductName": {
+     "type": "cds.LargeString"
+    },
+    "QuantityPerUnit": {
+     "type": "cds.LargeString"
+    },
+    "UnitPrice": {
+     "type": "cds.Decimal",
+     "scale": "variable"
+    },
+    "Category": {
+     "type": "cds.Association",
+     "@cds.ambiguous": "missing on condition?",
+     "target": "northbreeze.Categories",
+     "cardinality": {
+      "max": 1
+     },
+     "on": [
+      {
+       "ref": [
+        "Category",
+        "CategoryID"
+       ]
+      },
+      "=",
+      {
+       "ref": [
+        "Category_CategoryID"
+       ]
+      }
+     ]
+    },
+    "Category_CategoryID": {
+     "type": "cds.Integer"
+    },
+    "Supplier": {
+     "type": "cds.Association",
+     "@cds.ambiguous": "missing on condition?",
+     "target": "northbreeze.Suppliers",
+     "cardinality": {
+      "max": 1
+     },
+     "on": [
+      {
+       "ref": [
+        "Supplier",
+        "SupplierID"
+       ]
+      },
+      "=",
+      {
+       "ref": [
+        "Supplier_SupplierID"
+       ]
+      }
+     ]
+    },
+    "Supplier_SupplierID": {
+     "type": "cds.Integer"
+    },
+    "UnitsInStock": {
+     "type": "cds.Integer"
+    },
+    "UnitsOnOrder": {
+     "type": "cds.Integer"
+    },
+    "ReorderLevel": {
+     "type": "cds.Integer"
+    },
+    "Discontinued": {
+     "type": "cds.Boolean"
+    }
+   }
+  },
+  "northbreeze.Suppliers": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "SupplierID": {
+     "key": true,
+     "type": "cds.Integer",
+     "notNull": true
+    },
+    "CompanyName": {
+     "type": "cds.LargeString"
+    },
+    "ContactName": {
+     "type": "cds.LargeString"
+    },
+    "ContactTitle": {
+     "type": "cds.LargeString"
+    },
+    "Address": {
+     "type": "cds.LargeString"
+    },
+    "City": {
+     "type": "cds.LargeString"
+    },
+    "Region": {
+     "type": "cds.LargeString"
+    },
+    "PostalCode": {
+     "type": "cds.LargeString"
+    },
+    "Country": {
+     "type": "cds.LargeString"
+    },
+    "Phone": {
+     "type": "cds.LargeString"
+    },
+    "Fax": {
+     "type": "cds.LargeString"
+    },
+    "HomePage": {
+     "type": "cds.LargeString"
+    },
+    "Products": {
+     "type": "cds.Association",
+     "@cds.ambiguous": "missing on condition?",
+     "target": "northbreeze.Products",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    }
+   }
+  },
+  "northbreeze.Categories": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "CategoryID": {
+     "key": true,
+     "type": "cds.Integer",
+     "notNull": true
+    },
+    "CategoryName": {
+     "type": "cds.LargeString"
+    },
+    "Description": {
+     "type": "cds.LargeString"
+    },
+    "Products": {
+     "type": "cds.Association",
+     "@cds.ambiguous": "missing on condition?",
+     "target": "northbreeze.Products",
+     "cardinality": {
+      "max": "*"
+     },
+     "keys": []
+    }
+   }
+  },
+  "northbreeze.Summary_of_Sales_by_Years": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "OrderID": {
+     "key": true,
+     "type": "cds.Integer",
+     "notNull": true
+    },
+    "ShippedDate": {
+     "type": "cds.DateTime",
+     "@odata.Precision": 0,
+     "@odata.Type": "Edm.DateTimeOffset"
+    },
+    "Subtotal": {
+     "type": "cds.Decimal",
+     "scale": "variable"
+    }
+   }
+  },
+  "northbreeze.TotalProducts": {
+   "kind": "entity",
+   "@cds.external": true,
+   "@cds.persistence.skip": true,
+   "elements": {
+    "count": {
+     "type": "cds.Integer",
+     "@Core.Computed": true
+    }
+   }
+  },
+  "northbreeze": {
+   "kind": "service",
+   "@cds.external": true
+  }
+ }
+}
