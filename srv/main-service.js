@@ -132,10 +132,14 @@ module.exports = (srv)=>{
             else 
               return 1  
         })
+        if(Object.hasOwn(aPaths, '/getCountryDateFormat')){
+            
+        }
         let sSortedAPIPaths = aPaths.join(':')
         console.log('sSortedAPIs', sSortedAPIPaths)
         const sHash = await getHash(sSortedAPIPaths)
         console.log('week 4 sHash', sHash)
+       
 
     });    
     })
