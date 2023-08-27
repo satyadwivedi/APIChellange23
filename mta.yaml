@@ -1,0 +1,57 @@
+_schema-version: '3.1'
+ID: Aug23Chellange
+version: 1.0.0
+description: "SAP API Chellange Aug-23"
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npx cds build --production
+modules:
+  - name: AugChellange-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: AugChellange-destination
+      - name: AugChellange-db
+      - name: AugChellange-auth
+
+  - name: AugChellange-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: AugChellange-db
+
+resources:
+  - name: AugChellange-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+  - name: AugChellange-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      sservice-name: AugChellange-hdi
+      service-plan: hdi-shared
+  - name: AugChellange-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: AugChellange-${space}
+        tenant-mode: dedicated
